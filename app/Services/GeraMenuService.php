@@ -3,17 +3,26 @@ namespace App\Services;
 
 class GeraMenuService
 {
-    // Menu em Json
+    /**
+     * Menu em Json gerado pelo DoMenu
+     * @var string
+     */
     public $menuJson;
-    // Ex: <ul class="nav navbar-nav"></ul>
-    public $caixaListaMenu;
-    // Ex: <li><a href="#">Link</a></li>
-    public $itemListaMenu;
-    // Ex: <li class="dropdown"> </li>
-    public $itemListaSubMenu;
-
-    public $menuCompleto;
-
+    /**
+     * Container do menu com demarcacoes para sprintf (%s) Ex: <ul class="nav navbar-nav">%s</ul>
+     * @var string
+     */
+    public $caixaListaMenu = '<ul class="nav navbar-nav">%s</ul>';
+    /**
+     * Template de lista do menu com demarcacoes para sprintf (%s) Ex: <li><a href="%s" alt="%s" title="%s" >%s</a></li>
+     * @var string
+     */
+    public $itemListaMenu  = '<li><a href="%s" alt="%s" title="%s" >%s</a></li>';
+    /**
+     * Container que envolverá sub-menus com demarcacoes para sprintf (%s) Ex: <li class="dropdown"><a href="%s" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">%s <span class="caret"></span></a><ul class="dropdown-menu">%s</ul></li>
+     * @var string
+     */
+    public $itemListaSubMenu  = '<li class="dropdown"><a href="%s" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">%s <span class="caret"></span></a><ul class="dropdown-menu">%s</ul></li>';
 
     public function __construct($menuJson)
     {
@@ -36,7 +45,12 @@ class GeraMenuService
         return $this;
     }
 
-    public function geraLista(Array $menuArray, $sub = false)
+    /**
+     * GeraLista gera listagem do menu
+     * @param  Array  $menuArray Menu doMenu convertido em array
+     * @return string            Lista com menus
+     */
+    public function geraLista(Array $menuArray)
     {
         $lista = '';
         foreach ($menuArray as $key => $item) {
@@ -49,13 +63,15 @@ class GeraMenuService
         return $lista;
     }
 
+    /**
+     * Monta menu html completo
+     * @return string Menu html
+     */
     public function gerar()
     {
         $menuArray = json_decode($this->menuJson);
         $lista = $this->geraLista($menuArray);
-        echo $lista;
-        die();
-        $menuHtml = $this->caixaListaMenu;
+        $menuHtml = sprintf($this->caixaListaMenu, $lista);
 
         return $menuHtml;
     }
